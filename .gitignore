@@ -40,5 +40,8 @@ next-env.d.ts
 .env.local
 .env*.local
 
+# Firebase CLI deployment cache
+.firebase/
+
 # firebase
 .firebase/
