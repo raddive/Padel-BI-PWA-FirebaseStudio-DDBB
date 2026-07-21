@@ -49,6 +49,16 @@ function addStats(first: PlayerStats, second: PlayerStats): PlayerStats {
 }
 
 const emptyStats: PlayerStats = { winners: 0, errors: 0, x3: 0, x4: 0, dropshot: 0, volley: 0 };
+const defaultTeamBNames = { player1: 'Contrario_reves', player2: 'Contrario_drive' };
+
+function formatTeams(match: MatchRecord) {
+  return `${match.teamANames.player2} · ${match.teamANames.player1} vs Rivales`;
+}
+
+function formatOpponentPlayers(match: MatchRecord) {
+  const teamBNames = match.teamBNames ?? defaultTeamBNames;
+  return `Rivales: ${teamBNames.player2} · ${teamBNames.player1}`;
+}
 
 export default function HistoryPage() {
   const [matches, setMatches] = useState<MatchRecord[]>([]);
@@ -139,11 +149,14 @@ export default function HistoryPage() {
             >
               <Card className="transition-colors hover:border-primary/60 hover:bg-muted/40">
                 <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-3">
+                  <div>
                     <div>
-                      <p className="font-semibold">{match.teamANames.player1} y {match.teamANames.player2}</p>
+                      <p className="font-semibold">{formatTeams(match)}</p>
                       <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground"><CalendarDays className="h-3.5 w-3.5" />{formatDate(match.createdAt)}</p>
                     </div>
+                  </div>
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm text-muted-foreground">{formatSetScores(match)}</p>
                     <div className="flex items-center gap-2">
                       <span className="inline-flex w-14 justify-center rounded-md bg-primary/10 px-2 py-1 text-lg font-bold text-primary">{match.teamASetsWon}-{match.teamBSetsWon}</span>
                       <p className={`inline-flex w-40 items-center justify-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${result.className}`}>
@@ -152,7 +165,6 @@ export default function HistoryPage() {
                       </p>
                     </div>
                   </div>
-                  <p className="mt-3 text-sm text-muted-foreground">{formatSetScores(match)}</p>
                 </CardContent>
               </Card>
             </button>
@@ -170,7 +182,10 @@ export default function HistoryPage() {
             </header>
             <div className="mx-auto max-w-2xl space-y-4 p-4">
               <Card>
-                <CardHeader className="pb-2"><CardTitle className="text-lg">{selectedMatch.teamANames.player1} y {selectedMatch.teamANames.player2}</CardTitle></CardHeader>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg">{formatTeams(selectedMatch)}</CardTitle>
+                  <p className="text-sm text-muted-foreground">{formatOpponentPlayers(selectedMatch)}</p>
+                </CardHeader>
                 <CardContent>
                   <p className="text-3xl font-bold text-primary">{selectedMatch.teamASetsWon} - {selectedMatch.teamBSetsWon}</p>
                   {(() => {

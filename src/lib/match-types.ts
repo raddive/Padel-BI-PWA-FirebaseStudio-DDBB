@@ -13,6 +13,7 @@ export type SetScore = { teamA: number; teamB: number };
 
 export type SavedMatch = {
   teamANames: { player1: string; player2: string };
+  teamBNames?: { player1: string; player2: string };
   matchScore: SetScore[];
   setStats: TeamStats[];
   matchFormat: 'bestOfThree' | 'supertiebreak';

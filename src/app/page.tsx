@@ -34,6 +34,7 @@ const initialSetScore: SetScore = { teamA: 0, teamB: 0 };
 const initialPlayerStats: PlayerStats = { winners: 0, errors: 0, x3: 0, x4: 0, dropshot: 0, volley: 0 };
 const initialTeamStats: TeamStats = { player1: { ...initialPlayerStats }, player2: { ...initialPlayerStats } };
 const initialTeamNames: TeamNames = { player1: 'Aleix', player2: 'Xavi' };
+const initialTeamBNames: TeamNames = { player1: 'Contrario_reves', player2: 'Contrario_drive' };
 const initialTieBreakScore: TieBreakScore = { teamA: 0, teamB: 0 };
 
 
@@ -69,6 +70,7 @@ export default function PadelCounter() {
   const [currentSetIndex, setCurrentSetIndex] = useState(0);
   const [teamAStats, setTeamAStats] = useState<TeamStats>(initialTeamStats);
   const [teamANames, setTeamANames] = useState<TeamNames>({ player1: t.player1NamePlaceholder, player2: t.player2NamePlaceholder });
+  const [teamBNames, setTeamBNames] = useState<TeamNames>(initialTeamBNames);
   const [setStats, setSetStats] = useState<TeamStats[]>([]);
   const [matchOver, setMatchOver] = useState(false);
   const [showSetSummary, setShowSetSummary] = useState(false);
@@ -80,6 +82,7 @@ export default function PadelCounter() {
   const [lastWinnerActionPlayer1, setLastWinnerActionPlayer1] = useState<LastWinnerType | null>(null);
   const [lastWinnerActionPlayer2, setLastWinnerActionPlayer2] = useState<LastWinnerType | null>(null);
   const [showNameInputs, setShowNameInputs] = useState(false);
+  const [showTeamBNameInputs, setShowTeamBNameInputs] = useState(false);
   const { toast } = useToast();
   const summaryRef = useRef<HTMLDivElement | null>(null);
   const [isSharing, setIsSharing] = useState(false);
@@ -201,6 +204,7 @@ export default function PadelCounter() {
           const teamBSetsWon = finalScore.filter((set, index) => set && didTeamWinSet(set, 'teamB', matchFormat, index)).length;
           saveMatchToFirestore({
             teamANames,
+            teamBNames,
             matchScore: finalScore,
             setStats: allStats,
             matchFormat,
@@ -216,7 +220,7 @@ export default function PadelCounter() {
             });
         }
     }
-  }, [showSetSummary, matchOver, currentSetIndex, teamAStats, matchScore, setStats, matchFormat, teamANames, isGoldenPoint, toast, t.toastMatchSavedTitle, t.toastMatchSavedDescription, t.toastMatchSaveFailedTitle, t.toastMatchSaveFailedDescription]);
+  }, [showSetSummary, matchOver, currentSetIndex, teamAStats, matchScore, setStats, matchFormat, teamANames, teamBNames, isGoldenPoint, toast, t.toastMatchSavedTitle, t.toastMatchSavedDescription, t.toastMatchSaveFailedTitle, t.toastMatchSaveFailedDescription]);
 
 
   useEffect(() => {
@@ -447,6 +451,17 @@ export default function PadelCounter() {
     });
   };
 
+  const handleTeamBNameChange = (player: 'player1' | 'player2', name: string) => {
+    setTeamBNames(prevNames => ({ ...prevNames, [player]: name }));
+  };
+
+  const restoreDefaultTeamBNameIfEmpty = (player: 'player1' | 'player2') => {
+    setTeamBNames(prevNames => ({
+      ...prevNames,
+      [player]: prevNames[player].trim() || initialTeamBNames[player],
+    }));
+  };
+
   const toggleNameInputs = () => {
     setShowNameInputs(prev => !prev);
   };
@@ -463,6 +478,7 @@ export default function PadelCounter() {
     setCurrentSetIndex(0);
     setTeamAStats(initialTeamStats);
     setTeamANames({ player1: t.player1NamePlaceholder, player2: t.player2NamePlaceholder });
+    setTeamBNames(initialTeamBNames);
     setSetStats([]);
     setMatchOver(false);
     setShowSetSummary(false);
@@ -477,6 +493,7 @@ export default function PadelCounter() {
       summaryRef.current = null;
     }
     setShowNameInputs(false);
+    setShowTeamBNameInputs(false);
     setIsSettingsPopoverOpen(false);
     setIsTieBreakActive(false);
     setTieBreakScore(initialTieBreakScore);
@@ -888,6 +905,22 @@ export default function PadelCounter() {
                                               disabled={SETTINGS_DISABLED}
                                           />
                                       </div>
+                                  </CardContent>
+                              </Card>
+                          )}
+                          <Button onClick={() => { setShowTeamBNameInputs(prev => !prev); }} variant="outline" size="sm" className="w-full mb-2 flex items-center gap-1" disabled={SETTINGS_DISABLED}>
+                              <Edit className="w-4 h-4" /> {showTeamBNameInputs ? t.hideTeamBNames : t.editTeamBNames}
+                          </Button>
+                          {showTeamBNameInputs && (
+                              <Card className="bg-card border border-border rounded-lg shadow-md mt-2">
+                                  <CardHeader className="p-3">
+                                      <CardTitle className="text-base text-center text-card-foreground flex items-center justify-center gap-2">
+                                          <Users className="w-4 h-4" /> {t.teamBPlayerNames}
+                                      </CardTitle>
+                                  </CardHeader>
+                                  <CardContent className="grid grid-cols-1 gap-3 p-3 pt-0">
+                                      <Input value={teamBNames.player1} onChange={(e) => handleTeamBNameChange('player1', e.target.value)} onBlur={() => restoreDefaultTeamBNameIfEmpty('player1')} placeholder={initialTeamBNames.player1} className="bg-background h-9" disabled={SETTINGS_DISABLED} />
+                                      <Input value={teamBNames.player2} onChange={(e) => handleTeamBNameChange('player2', e.target.value)} onBlur={() => restoreDefaultTeamBNameIfEmpty('player2')} placeholder={initialTeamBNames.player2} className="bg-background h-9" disabled={SETTINGS_DISABLED} />
                                   </CardContent>
                               </Card>
                           )}
