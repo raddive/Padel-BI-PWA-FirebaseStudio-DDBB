@@ -17,6 +17,7 @@ import html2canvas from 'html2canvas';
 import { saveMatchToFirestore } from '@/lib/save-match';
 import { isFirebaseConfigured } from '@/lib/firebase';
 import type { PlayerStats, TeamStats, SetScore } from '@/lib/match-types';
+import { AppNavigation } from '@/components/app-navigation';
 
 import en from '../locales/en.json';
 import es from '../locales/es.json';
@@ -80,7 +81,7 @@ export default function PadelCounter() {
   const [lastWinnerActionPlayer2, setLastWinnerActionPlayer2] = useState<LastWinnerType | null>(null);
   const [showNameInputs, setShowNameInputs] = useState(false);
   const { toast } = useToast();
-  const summaryRef = useRef<HTMLDivElement>(null);
+  const summaryRef = useRef<HTMLDivElement | null>(null);
   const [isSharing, setIsSharing] = useState(false);
   const [isSettingsPopoverOpen, setIsSettingsPopoverOpen] = useState(false);
   const [isTieBreakActive, setIsTieBreakActive] = useState(false);
@@ -920,7 +921,7 @@ export default function PadelCounter() {
       </div>
 
       {/* Scrollable Content Section */}
-      <div className="mt-28 p-2 sm:p-4 min-h-screen flex flex-col bg-background text-foreground w-full">
+      <div className="mt-28 min-h-screen w-full flex flex-col bg-background p-2 pb-24 text-foreground sm:p-4 sm:pb-24">
         <Card className="w-full mb-4 shadow-lg border border-border rounded-lg">
           <CardContent className="py-3 px-1">
             <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6 text-center items-start">
@@ -1331,6 +1332,7 @@ export default function PadelCounter() {
            </Card>
          )}
       </div>
+      <AppNavigation />
     </>
   );
 }
