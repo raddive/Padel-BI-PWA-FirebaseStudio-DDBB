@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { db, isFirebaseConfigured } from '@/lib/firebase';
-import type { SavedMatch } from '@/lib/match-types';
+import type { PlayerStats, SavedMatch } from '@/lib/match-types';
 
 type MatchRecord = SavedMatch & {
   id: string;
@@ -27,11 +27,30 @@ function formatSetScores(match: MatchRecord) {
   return match.matchScore.map((set) => `${set.teamA}-${set.teamB}`).join(' · ');
 }
 
+function addStats(first: PlayerStats, second: PlayerStats): PlayerStats {
+  return {
+    winners: first.winners + second.winners,
+    errors: first.errors + second.errors,
+    x3: first.x3 + second.x3,
+    x4: first.x4 + second.x4,
+    dropshot: first.dropshot + second.dropshot,
+    volley: first.volley + second.volley,
+  };
+}
+
+const emptyStats: PlayerStats = { winners: 0, errors: 0, x3: 0, x4: 0, dropshot: 0, volley: 0 };
+
 export default function HistoryPage() {
   const [matches, setMatches] = useState<MatchRecord[]>([]);
   const [selectedMatch, setSelectedMatch] = useState<MatchRecord | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const matchTotals = selectedMatch
+    ? selectedMatch.setStats.reduce(
+        (total, setStats) => addStats(total, addStats(setStats.player1, setStats.player2)),
+        emptyStats,
+      )
+    : emptyStats;
 
   const loadMatches = useCallback(async () => {
     if (!isFirebaseConfigured()) {
@@ -150,8 +169,10 @@ export default function HistoryPage() {
                         <Fragment key={index}>
                           <TableRow key={`${index}-player1`}><TableCell rowSpan={2}>{index + 1}</TableCell><TableCell>{selectedMatch.teamANames.player1}</TableCell><TableCell className="text-right">{setStats.player1.winners}</TableCell><TableCell className="text-right">{setStats.player1.errors}</TableCell><TableCell className="text-right">{setStats.player1.x3}</TableCell><TableCell className="text-right">{setStats.player1.x4}</TableCell><TableCell className="text-right">{setStats.player1.dropshot}</TableCell><TableCell className="text-right">{setStats.player1.volley}</TableCell></TableRow>
                           <TableRow key={`${index}-player2`}><TableCell>{selectedMatch.teamANames.player2}</TableCell><TableCell className="text-right">{setStats.player2.winners}</TableCell><TableCell className="text-right">{setStats.player2.errors}</TableCell><TableCell className="text-right">{setStats.player2.x3}</TableCell><TableCell className="text-right">{setStats.player2.x4}</TableCell><TableCell className="text-right">{setStats.player2.dropshot}</TableCell><TableCell className="text-right">{setStats.player2.volley}</TableCell></TableRow>
+                          <TableRow className="bg-muted/50 font-semibold"><TableCell colSpan={2}>Total del set</TableCell><TableCell className="text-right">{setStats.player1.winners + setStats.player2.winners}</TableCell><TableCell className="text-right">{setStats.player1.errors + setStats.player2.errors}</TableCell><TableCell className="text-right">{setStats.player1.x3 + setStats.player2.x3}</TableCell><TableCell className="text-right">{setStats.player1.x4 + setStats.player2.x4}</TableCell><TableCell className="text-right">{setStats.player1.dropshot + setStats.player2.dropshot}</TableCell><TableCell className="text-right">{setStats.player1.volley + setStats.player2.volley}</TableCell></TableRow>
                         </Fragment>
                       ))}
+                      <TableRow className="bg-primary/10 font-bold"><TableCell colSpan={2}>Totales del partido</TableCell><TableCell className="text-right">{matchTotals.winners}</TableCell><TableCell className="text-right">{matchTotals.errors}</TableCell><TableCell className="text-right">{matchTotals.x3}</TableCell><TableCell className="text-right">{matchTotals.x4}</TableCell><TableCell className="text-right">{matchTotals.dropshot}</TableCell><TableCell className="text-right">{matchTotals.volley}</TableCell></TableRow>
                     </TableBody>
                   </Table>
                 </CardContent>
