@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment, useCallback, useEffect, useState } from 'react';
-import { collection, getDocs, orderBy, query, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, Timestamp } from 'firebase/firestore';
 import { CalendarDays, ChevronLeft, Loader2, RefreshCw, Trophy } from 'lucide-react';
 import { AppNavigation } from '@/components/app-navigation';
 import { Button } from '@/components/ui/button';
@@ -43,8 +43,10 @@ export default function HistoryPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const snapshot = await getDocs(query(collection(db, 'matches'), orderBy('createdAt', 'desc')));
-      setMatches(snapshot.docs.map((document) => ({ id: document.id, ...document.data() } as MatchRecord)));
+      const snapshot = await getDocs(collection(db, 'matches'));
+      const records = snapshot.docs.map((document) => ({ id: document.id, ...document.data() } as MatchRecord));
+      records.sort((first, second) => (second.createdAt?.toMillis() ?? 0) - (first.createdAt?.toMillis() ?? 0));
+      setMatches(records);
     } catch {
       setError('No se han podido cargar los partidos. Comprueba la conexión e inténtalo de nuevo.');
     } finally {
