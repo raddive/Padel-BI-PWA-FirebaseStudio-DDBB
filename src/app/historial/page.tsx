@@ -2,7 +2,7 @@
 
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { collection, getDocs, Timestamp } from 'firebase/firestore';
-import { CalendarDays, ChevronLeft, Loader2, RefreshCw, Trophy } from 'lucide-react';
+import { CalendarDays, ChevronLeft, CircleX, Loader2, RefreshCw, Trophy } from 'lucide-react';
 import { AppNavigation } from '@/components/app-navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,6 +25,16 @@ function formatDate(timestamp?: Timestamp) {
 
 function formatSetScores(match: MatchRecord) {
   return match.matchScore.map((set) => `${set.teamA}-${set.teamB}`).join(' · ');
+}
+
+function teamAResult(match: MatchRecord) {
+  if (match.teamASetsWon > match.teamBSetsWon) {
+    return { label: 'Equipo A ganó', className: 'bg-green-500/10 text-green-700', won: true };
+  }
+  if (match.teamASetsWon < match.teamBSetsWon) {
+    return { label: 'Equipo A perdió', className: 'bg-destructive/10 text-destructive', won: false };
+  }
+  return { label: 'Empate', className: 'bg-muted text-muted-foreground', won: false };
 }
 
 function addStats(first: PlayerStats, second: PlayerStats): PlayerStats {
@@ -118,27 +128,36 @@ export default function HistoryPage() {
           </Card>
         )}
 
-        {!isLoading && !error && matches.map((match) => (
-          <button
-            key={match.id}
-            type="button"
-            onClick={() => setSelectedMatch(match)}
-            className="block w-full text-left"
-          >
-            <Card className="transition-colors hover:border-primary/60 hover:bg-muted/40">
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="font-semibold">{match.teamANames.player1} y {match.teamANames.player2}</p>
-                    <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground"><CalendarDays className="h-3.5 w-3.5" />{formatDate(match.createdAt)}</p>
+        {!isLoading && !error && matches.map((match) => {
+          const result = teamAResult(match);
+          return (
+            <button
+              key={match.id}
+              type="button"
+              onClick={() => setSelectedMatch(match)}
+              className="block w-full text-left"
+            >
+              <Card className="transition-colors hover:border-primary/60 hover:bg-muted/40">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold">{match.teamANames.player1} y {match.teamANames.player2}</p>
+                      <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground"><CalendarDays className="h-3.5 w-3.5" />{formatDate(match.createdAt)}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex w-14 justify-center rounded-md bg-primary/10 px-2 py-1 text-lg font-bold text-primary">{match.teamASetsWon}-{match.teamBSetsWon}</span>
+                      <p className={`inline-flex w-40 items-center justify-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${result.className}`}>
+                        {result.won ? <Trophy className="h-3.5 w-3.5" /> : <CircleX className="h-3.5 w-3.5" />}
+                        {result.label}
+                      </p>
+                    </div>
                   </div>
-                  <span className="rounded-md bg-primary/10 px-2 py-1 text-lg font-bold text-primary">{match.teamASetsWon}-{match.teamBSetsWon}</span>
-                </div>
-                <p className="mt-3 text-sm text-muted-foreground">{formatSetScores(match)}</p>
-              </CardContent>
-            </Card>
-          </button>
-        ))}
+                  <p className="mt-3 text-sm text-muted-foreground">{formatSetScores(match)}</p>
+                </CardContent>
+              </Card>
+            </button>
+          );
+        })}
 
         {selectedMatch && (
           <section className="fixed inset-0 z-[60] overflow-y-auto bg-background pb-24">
@@ -154,6 +173,10 @@ export default function HistoryPage() {
                 <CardHeader className="pb-2"><CardTitle className="text-lg">{selectedMatch.teamANames.player1} y {selectedMatch.teamANames.player2}</CardTitle></CardHeader>
                 <CardContent>
                   <p className="text-3xl font-bold text-primary">{selectedMatch.teamASetsWon} - {selectedMatch.teamBSetsWon}</p>
+                  {(() => {
+                    const result = teamAResult(selectedMatch);
+                    return <p className={`mt-3 inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-medium ${result.className}`}>{result.won ? <Trophy className="h-4 w-4" /> : <CircleX className="h-4 w-4" />}{result.label}</p>;
+                  })()}
                   <p className="mt-2 text-sm text-muted-foreground">Sets: {formatSetScores(selectedMatch)}</p>
                   <p className="mt-1 text-sm text-muted-foreground">{selectedMatch.matchFormat === 'supertiebreak' ? 'Supertiebreak a 10' : 'Al mejor de 3 sets'} · {selectedMatch.isGoldenPoint ? 'Punto de oro' : 'Ventaja'}</p>
                 </CardContent>
