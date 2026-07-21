@@ -433,8 +433,18 @@ export default function PadelCounter() {
   const handleNameChange = (player: 'player1' | 'player2', name: string) => {
     setTeamANames(prevNames => ({
         ...prevNames,
-        [player]: name || (player === 'player1' ? t.player1NamePlaceholder : t.player2NamePlaceholder)
+        [player]: name
     }));
+  };
+
+  const restoreDefaultNameIfEmpty = (player: 'player1' | 'player2') => {
+    setTeamANames(prevNames => {
+      const trimmedName = prevNames[player].trim();
+      return {
+        ...prevNames,
+        [player]: trimmedName || (player === 'player1' ? t.player1NamePlaceholder : t.player2NamePlaceholder),
+      };
+    });
   };
 
   const toggleNameInputs = () => {
@@ -861,6 +871,7 @@ export default function PadelCounter() {
                                               id="player1NamePopover"
                                               value={teamANames.player1}
                                               onChange={(e) => handleNameChange('player1', e.target.value)}
+                                              onBlur={() => restoreDefaultNameIfEmpty('player1')}
                                               placeholder={t.player1NamePlaceholder}
                                               className="bg-background h-9"
                                               disabled={SETTINGS_DISABLED}
@@ -871,6 +882,7 @@ export default function PadelCounter() {
                                               id="player2NamePopover"
                                               value={teamANames.player2}
                                               onChange={(e) => handleNameChange('player2', e.target.value)}
+                                              onBlur={() => restoreDefaultNameIfEmpty('player2')}
                                               placeholder={t.player2NamePlaceholder}
                                               className="bg-background h-9"
                                               disabled={SETTINGS_DISABLED}
