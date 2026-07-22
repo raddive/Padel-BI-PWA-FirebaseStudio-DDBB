@@ -94,6 +94,11 @@ export default function PadelCounter() {
   const [isGoldenPoint, setIsGoldenPoint] = useState<boolean>(false);
   const [matchFormat, setMatchFormat] = useState<'bestOfThree' | 'supertiebreak'>('bestOfThree');
 
+  useEffect(() => {
+    const savedLocale = window.localStorage.getItem('padelbi-locale');
+    if (savedLocale === 'es' || savedLocale === 'en') setLocale(savedLocale);
+  }, []);
+
   const updateGameScore = React.useCallback((winningTeam: 'teamA' | 'teamB') => {
     const wasTieBreakWhenPointWon = isTieBreakActive;
     let isCurrentSetSupertiebreak = false;
@@ -669,7 +674,11 @@ export default function PadelCounter() {
  };
 
  const toggleLocale = () => {
-    setLocale(prevLocale => (prevLocale === 'en' ? 'es' : 'en'));
+    setLocale(prevLocale => {
+      const nextLocale = prevLocale === 'en' ? 'es' : 'en';
+      window.localStorage.setItem('padelbi-locale', nextLocale);
+      return nextLocale;
+    });
  };
 
  const summaryCardMatchData = useMemo(() => finalMatchScore || matchScore, [finalMatchScore, matchScore]);
@@ -1377,7 +1386,7 @@ export default function PadelCounter() {
            </Card>
          )}
       </div>
-      <AppNavigation />
+      <AppNavigation locale={locale} />
     </>
   );
 }

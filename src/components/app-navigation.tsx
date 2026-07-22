@@ -4,13 +4,21 @@ import Link from 'next/link';
 import { History, Trophy } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
-const items = [
-  { href: '/', label: 'Partido', icon: Trophy },
-  { href: '/historial', label: 'Historial', icon: History },
-];
+type AppNavigationProps = {
+  locale?: 'es' | 'en';
+};
 
-export function AppNavigation() {
+export function AppNavigation({ locale = 'es' }: AppNavigationProps) {
   const pathname = usePathname();
+  const items = locale === 'en'
+    ? [
+        { href: '/', label: 'Match', icon: Trophy },
+        { href: '/historial', label: 'History', icon: History },
+      ]
+    : [
+        { href: '/', label: 'Partido', icon: Trophy },
+        { href: '/historial', label: 'Historial', icon: History },
+      ];
 
   return (
     <nav
