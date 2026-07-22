@@ -846,7 +846,7 @@ export default function PadelCounter() {
   return (
     <>
       {/* Fixed Header Section */}
-      <div className="fixed left-1/2 top-0 z-50 w-[calc(100%-1rem)] max-w-xl -translate-x-1/2 rounded-xl bg-primary text-primary-foreground shadow-lg">
+      <div className="fixed left-1/2 top-0 z-50 w-[calc(100%-1rem)] -translate-x-1/2 rounded-xl bg-primary text-primary-foreground shadow-lg">
         <div className="pt-[calc(env(safe-area-inset-top)+0.5rem)]">
           <div className="relative mx-auto flex min-h-[68px] items-center justify-center px-3 text-center">
             <div>

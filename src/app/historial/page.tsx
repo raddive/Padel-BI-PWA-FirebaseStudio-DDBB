@@ -99,7 +99,7 @@ export default function HistoryPage() {
 
   return (
     <main className="min-h-screen bg-background pb-24 text-foreground">
-      <header className="sticky top-0 z-40 mx-auto w-[calc(100%-1rem)] max-w-xl rounded-xl bg-primary text-primary-foreground shadow-lg">
+      <header className="sticky top-0 z-40 mx-auto w-[calc(100%-1rem)] rounded-xl bg-primary text-primary-foreground shadow-lg">
         <div className="pt-[calc(env(safe-area-inset-top)+0.5rem)]">
           <div className="relative flex min-h-[68px] items-center justify-center px-3 text-center">
             <div>
@@ -114,7 +114,7 @@ export default function HistoryPage() {
         </div>
       </header>
 
-      <section className="mx-auto max-w-2xl space-y-3 p-4">
+      <section className="w-full space-y-3 p-2 sm:p-4">
         {isLoading && (
           <div className="flex justify-center py-16 text-muted-foreground">
             <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Cargando partidos…
