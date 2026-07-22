@@ -846,14 +846,14 @@ export default function PadelCounter() {
   return (
     <>
       {/* Fixed Header Section */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-primary text-primary-foreground shadow-lg rounded-b-lg">
-        <div className="pt-8"> {/* For status bar */}
-          <div className="relative text-center p-4">
-            <div className="mx-auto">
+      <div className="fixed left-1/2 top-0 z-50 w-[calc(100%-1rem)] max-w-xl -translate-x-1/2 rounded-xl bg-primary text-primary-foreground shadow-lg">
+        <div className="pt-[calc(env(safe-area-inset-top)+0.5rem)]">
+          <div className="relative mx-auto flex min-h-[68px] items-center justify-center px-3 text-center">
+            <div>
               <h1 className="text-3xl font-bold">{t.appTitle}</h1>
               {matchOver && <p className="text-primary-foreground/80 font-semibold">{t.matchFinished}</p>}
             </div>
-            <div className="absolute top-1/2 right-2 sm:right-4 -translate-y-1/2">
+            <div className="absolute bottom-2 right-2 sm:right-3">
               <Popover open={isSettingsPopoverOpen} onOpenChange={setIsSettingsPopoverOpen}>
                   <PopoverTrigger asChild>
                       <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20 focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-primary">
@@ -966,7 +966,7 @@ export default function PadelCounter() {
       </div>
 
       {/* Scrollable Content Section */}
-      <div className="mt-28 min-h-screen w-full flex flex-col bg-background p-2 pb-24 text-foreground sm:p-4 sm:pb-24">
+      <div className="mt-24 min-h-screen w-full flex flex-col bg-background p-2 pb-24 text-foreground sm:p-4 sm:pb-24">
         <Card className="w-full mb-4 shadow-lg border border-border rounded-lg">
           <CardContent className="py-3 px-1">
             <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6 text-center items-start">

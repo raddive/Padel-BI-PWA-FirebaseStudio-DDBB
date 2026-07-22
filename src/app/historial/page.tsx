@@ -99,16 +99,18 @@ export default function HistoryPage() {
 
   return (
     <main className="min-h-screen bg-background pb-24 text-foreground">
-      <header className="sticky top-0 z-40 bg-primary px-4 pb-4 pt-8 text-primary-foreground shadow-lg">
-        <div className="mx-auto flex max-w-2xl items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Historial</h1>
-            <p className="text-sm text-primary-foreground/80">Partidos guardados</p>
+      <header className="sticky top-0 z-40 mx-auto w-[calc(100%-1rem)] max-w-xl rounded-xl bg-primary text-primary-foreground shadow-lg">
+        <div className="pt-[calc(env(safe-area-inset-top)+0.5rem)]">
+          <div className="relative flex min-h-[68px] items-center justify-center px-3 text-center">
+            <div>
+              <h1 className="text-3xl font-bold">Historial</h1>
+              <p className="text-sm text-primary-foreground/80">Partidos guardados</p>
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => void loadMatches()} disabled={isLoading} className="absolute bottom-2 right-2 text-primary-foreground hover:bg-primary-foreground/20">
+              <RefreshCw className={`h-5 w-5 ${isLoading ? 'animate-spin' : ''}`} />
+              <span className="sr-only">Actualizar historial</span>
+            </Button>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => void loadMatches()} disabled={isLoading} className="text-primary-foreground hover:bg-primary-foreground/20">
-            <RefreshCw className={`h-5 w-5 ${isLoading ? 'animate-spin' : ''}`} />
-            <span className="sr-only">Actualizar historial</span>
-          </Button>
         </div>
       </header>
 
