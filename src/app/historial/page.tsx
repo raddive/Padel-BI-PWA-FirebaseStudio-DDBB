@@ -127,8 +127,8 @@ export default function HistoryPage() {
 
   return (
     <main className="min-h-screen bg-background pb-24 text-foreground">
-      <header className="sticky top-0 z-40 mx-auto w-[calc(100%-1rem)] rounded-xl bg-primary text-primary-foreground shadow-lg">
-        <div className="pt-[calc(env(safe-area-inset-top)+0.5rem)]">
+      <header className="sticky top-4 z-40 mx-auto mt-[calc(env(safe-area-inset-top)+1rem)] w-[calc(100%-1rem)] rounded-xl bg-primary text-primary-foreground shadow-lg sm:w-[calc(100%-2rem)]">
+        <div>
           <div className="relative flex min-h-[68px] items-center justify-center px-3 text-center">
             <div>
               <h1 className="text-3xl font-bold">{t.title}</h1>

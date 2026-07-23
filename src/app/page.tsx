@@ -855,8 +855,8 @@ export default function PadelCounter() {
   return (
     <>
       {/* Fixed Header Section */}
-      <div className="fixed left-1/2 top-0 z-50 w-[calc(100%-1rem)] -translate-x-1/2 rounded-xl bg-primary text-primary-foreground shadow-lg">
-        <div className="pt-[calc(env(safe-area-inset-top)+0.5rem)]">
+      <div className="fixed left-1/2 top-[calc(env(safe-area-inset-top)+1rem)] z-50 w-[calc(100%-1rem)] -translate-x-1/2 rounded-xl bg-primary text-primary-foreground shadow-lg sm:w-[calc(100%-2rem)]">
+        <div>
           <div className="relative mx-auto flex min-h-[68px] items-center justify-center px-3 text-center">
             <div>
               <h1 className="text-3xl font-bold">{t.appTitle}</h1>
@@ -975,7 +975,7 @@ export default function PadelCounter() {
       </div>
 
       {/* Scrollable Content Section */}
-      <div className="mt-24 min-h-screen w-full flex flex-col bg-background p-2 pb-24 text-foreground sm:p-4 sm:pb-24">
+      <div className="mt-28 min-h-screen w-full flex flex-col bg-background p-2 pb-24 text-foreground sm:p-4 sm:pb-24">
         <Card className="w-full mb-4 shadow-lg border border-border rounded-lg">
           <CardContent className="py-3 px-1">
             <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6 text-center items-start">
